@@ -18,7 +18,7 @@ export default () => {
   const [count, setCount] = useState<number>(1);
   const [data, setData] = useState<IResponderPokemon>({
     count: 0,
-    next: "https://pokeapi.co/api/v2/pokemon",
+    next: "https://pokeapi.co/api/v2/pokemon?limit=21",
     previous: null,
     results: [],
   });

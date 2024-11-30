@@ -29,6 +29,7 @@ function App() {
         <Stack sx={styles.currentPage}>
           <Typography sx={{ m: 0 }} fontSize={16} fontWeight={700}>
             {count}
+            {data.results.length}
           </Typography>
         </Stack>
 
@@ -48,7 +49,7 @@ function App() {
         gap={5}
       >
         {loading
-          ? Array.from({ length: 20 }).map((_, index) => (
+          ? Array.from({ length: 21 }).map((_, index) => (
               <LoadingCard key={index} checked={loading} />
             ))
           : data.results.map((item) => (
