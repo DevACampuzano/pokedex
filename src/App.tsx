@@ -29,7 +29,6 @@ function App() {
         <Stack sx={styles.currentPage}>
           <Typography sx={{ m: 0 }} fontSize={16} fontWeight={700}>
             {count}
-            {data.results.length}
           </Typography>
         </Stack>
 
