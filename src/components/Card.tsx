@@ -54,10 +54,10 @@ const CardCustom = ({ name, url, checked }: ICard) => {
         <CardActionArea>
           <CardMedia component="img" image={img} alt={name} />
           <CardContent sx={{ gap: 2 }}>
-            <Typography gutterBottom variant="h5" component="div" color="#fff">
+            <Typography gutterBottom variant="h4" color="#fff">
               {capitalize(name)}
             </Typography>
-            <Stack gap={2}>
+            <Stack gap={1}>
               <Stack direction="row" gap={1}>
                 <Typography variant="body2" color="#ffffff66" fontWeight={700}>
                   Types:
