@@ -5,9 +5,9 @@ import {
   CardActionArea,
   CardContent,
   CardMedia,
-  Grow,
   Stack,
   Typography,
+  Slide,
 } from "@mui/material";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -21,29 +21,38 @@ interface ICard {
 
 const CardCustom = ({ name, url, checked }: ICard) => {
   const [data, setData] = useState<IReponderGetPokemon>();
+  const [img, setImg] = useState("");
+  const [loadingData, setloadingData] = useState(true);
 
   useEffect(() => {
-    axios.get<IReponderGetPokemon>(url).then((response) => {
-      setData(response.data);
+    axios.get<IReponderGetPokemon>(url).then(async ({ data }) => {
+      if (data) {
+        const respondeImg = await axios.get(
+          data.sprites.other?.["official-artwork"].front_default || "",
+          {
+            responseType: "blob",
+          }
+        );
+        setImg(() => URL.createObjectURL(respondeImg.data));
+        setData(() => data);
+        setloadingData(() => false);
+      }
     });
   }, []);
 
   const capitalize = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
+
+  if (loadingData) {
+    return <></>;
+  }
+
   return (
-    <Grow
-      in={checked}
-      style={{ transformOrigin: "0 0 0" }}
-      {...(checked ? { timeout: 1000 } : {})}
-    >
+    <Slide direction="up" in={checked} mountOnEnter unmountOnExit>
       <Card sx={{ maxWidth: 345, backgroundColor: "#222222" }}>
         <CardActionArea>
-          <CardMedia
-            component="img"
-            image={data?.sprites.other?.["official-artwork"].front_default}
-            alt={name}
-          />
+          <CardMedia component="img" image={img} alt={name} />
           <CardContent sx={{ gap: 2 }}>
             <Typography gutterBottom variant="h5" component="div" color="#fff">
               {capitalize(name)}
@@ -124,7 +133,7 @@ const CardCustom = ({ name, url, checked }: ICard) => {
           </CardContent>
         </CardActionArea>
       </Card>
-    </Grow>
+    </Slide>
   );
 };
 
