@@ -4,6 +4,8 @@ import usePokemon from "./usePokemon";
 import Card from "./components/Card";
 import LoadingCard from "./components/LoadingCard";
 
+// Hola! I'm a comment!
+
 function App() {
   const { data, count, getData, loading } = usePokemon();
 
