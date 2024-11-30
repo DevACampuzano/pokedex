@@ -3,11 +3,12 @@ import styles from "./styles";
 import usePokemon from "./usePokemon";
 import Card from "./components/Card";
 import LoadingCard from "./components/LoadingCard";
-
-// Hola! I'm a comment!
+import { useMediaQuery } from "@mui/material";
 
 function App() {
   const { data, count, getData, loading } = usePokemon();
+
+  const isSmallScreen = useMediaQuery("(max-width:810px)");
 
   return (
     <Stack>
@@ -42,7 +43,7 @@ function App() {
         sx={styles.root}
         direction="row"
         flexWrap="wrap"
-        justifyContent="space-between"
+        justifyContent={!isSmallScreen ? "space-between" : "center"}
         alignContent="center"
         p={5}
         gap={5}
