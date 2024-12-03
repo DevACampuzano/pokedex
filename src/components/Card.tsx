@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   Box,
@@ -8,21 +9,81 @@ import {
   Stack,
   Typography,
   Slide,
+  IconButton,
 } from "@mui/material";
+import { FavoriteBorder, Favorite } from "@mui/icons-material";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { IReponderGetPokemon } from "./interface";
+import Swal from "sweetalert2";
+import api from "../api";
 
 interface ICard {
   name: string;
   url: string;
   checked: boolean;
+  favoriteCheck?: boolean;
+  id?: number;
+  onReload?: () => void;
 }
 
-const CardCustom = ({ name, url, checked }: ICard) => {
+const CardCustom = ({
+  name,
+  url,
+  checked,
+  favoriteCheck = false,
+  id,
+  onReload,
+}: ICard) => {
   const [data, setData] = useState<IReponderGetPokemon>();
   const [img, setImg] = useState("");
   const [loadingData, setloadingData] = useState(true);
+  const token = localStorage.getItem("token");
+  const [favorite, setFavorite] = useState(favoriteCheck);
+
+  const addFavorite = async () => {
+    try {
+      const responde = await api.post(
+        "/favoritos/addFavorito",
+        {
+          nombre: name,
+          url,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(responde.data);
+      setFavorite(true);
+    } catch (error: any) {
+      console.log(error.response.data.msg);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error al agregar favoritos",
+      });
+    }
+  };
+
+  const dropFavorite = async () => {
+    try {
+      await api.delete("/favoritos/dropFavorito/" + id, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (onReload) onReload();
+    } catch (error: any) {
+      console.log(error.response.data.msg);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Error al eliminar favoritos",
+      });
+    }
+  };
 
   useEffect(() => {
     axios.get<IReponderGetPokemon>(url).then(async ({ data }) => {
@@ -54,9 +115,26 @@ const CardCustom = ({ name, url, checked }: ICard) => {
         <CardActionArea>
           <CardMedia component="img" image={img} alt={name} />
           <CardContent sx={{ gap: 2 }}>
-            <Typography gutterBottom variant="h4" color="#fff">
-              {capitalize(name)}
-            </Typography>
+            <Stack
+              width="100%"
+              direction="row"
+              justifyContent={token ? "space-between" : "flex-start"}
+              alignItems="center"
+            >
+              <Typography gutterBottom variant="h4" color="#fff">
+                {capitalize(name)}
+              </Typography>
+              {token && (
+                <IconButton onClick={favorite ? dropFavorite : addFavorite}>
+                  {favorite ? (
+                    <Favorite color="error" />
+                  ) : (
+                    <FavoriteBorder color="error" />
+                  )}
+                </IconButton>
+              )}
+            </Stack>
+
             <Stack gap={1}>
               <Stack direction="row" gap={1}>
                 <Typography variant="body2" color="#ffffff66" fontWeight={700}>

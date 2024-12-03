@@ -1,67 +1,23 @@
-import { Button, LinearProgress, Stack, Typography } from "@mui/material";
-import styles from "./styles";
-import usePokemon from "./usePokemon";
-import Card from "./components/Card";
-import LoadingCard from "./components/LoadingCard";
-import { useMediaQuery } from "@mui/material";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Home from "./pages/Home";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Favoritos from "./pages/Favoritos";
 
 function App() {
-  const { data, count, getData, loading } = usePokemon();
-
-  const isSmallScreen = useMediaQuery("(max-width:810px)");
-
+  const token = localStorage.getItem("token");
   return (
-    <Stack>
-      <Stack
-        direction="row"
-        component="header"
-        justifyContent="space-between"
-        alignItems="center"
-        padding={"24px"}
-        sx={{ backgroundColor: "#222222" }}
-      >
-        <Button
-          variant="contained"
-          onClick={() => getData("previous")}
-          sx={{ visibility: count === 1 ? "hidden" : "" }}
-        >
-          Previous
-        </Button>
-        <Stack sx={styles.currentPage}>
-          <Typography sx={{ m: 0 }} fontSize={16} fontWeight={700}>
-            {count}
-          </Typography>
-        </Stack>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        {token && <Route path="/favotios" element={<Favoritos />} />}
 
-        <Button variant="contained" onClick={() => getData("next")}>
-          Next
-        </Button>
-      </Stack>
-      {loading && <LinearProgress />}
-      <Stack
-        component="main"
-        sx={styles.root}
-        direction="row"
-        flexWrap="wrap"
-        justifyContent={!isSmallScreen ? "space-between" : "center"}
-        alignContent="center"
-        p={5}
-        gap={5}
-      >
-        {loading
-          ? Array.from({ length: 21 }).map((_, index) => (
-              <LoadingCard key={index} checked={loading} />
-            ))
-          : data.results.map((item) => (
-              <Card
-                name={item.name}
-                url={item.url}
-                key={item.name}
-                checked={!loading}
-              />
-            ))}
-      </Stack>
-    </Stack>
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

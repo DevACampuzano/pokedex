@@ -45,6 +45,8 @@ export default () => {
 
   useEffect(() => {
     getData();
+
+    axios.get("http://localhost:4000").then(console.log).catch(console.log);
   }, []);
 
   return {
